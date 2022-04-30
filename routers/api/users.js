@@ -39,6 +39,7 @@ router.post('/registe',(req,res)=>{
         email:req.body.email,
         avatar:avater,
         password:req.body.password,
+        shopname:req.body.shopname
       })
                 // //存储数据
                 // newUser.save()
@@ -138,7 +139,8 @@ router.post('/login',(req,res)=>{
             email:user.email,
             name:user.name,
             avatar:user.avatar,
-            password:user.password
+            password:user.password,
+            shopname:user.shopname
           }
           // expiresIn: 3600 //存活时间
           jwt.sign(rule,'secret',{expiresIn:3600000},(err,token)=>{

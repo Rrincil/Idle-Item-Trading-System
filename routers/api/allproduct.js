@@ -20,32 +20,36 @@ router.get('/text',(req,res)=>{
 //@router podt api/allproduct/add
 //@desc 存入json数据
 //@access public
-router.post("/add",(req,res)=>{
+router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
   allproduct.findOne({
-    name:req.body.name
-  }).then(ret=>{
-    if(!ret){
-      console.log(ret);
-      const newallproduct =new allproduct({})
-      // const imgurl = 'http://localhost:3000/img/'
-      if(req.body.name) newallproduct.name = req.body.name;
-      if(req.body.num) newallproduct.num = req.body.num;
-      if(req.body.remark) newfavorites.remark = req.body.remark;  
-      if(req.body.imgurl) newallproduct.imgurl = req.body.imgurl;  
-      if(req.body.shopname) newallproduct.shopname = req.body.shopname;
-      if(req.body.isstar) newallproduct.isstar = req.body.isstar;
-      if(req.body.price) newallproduct.price = req.body.price;
-      newallproduct.save().then(allproduct=>{
-        res.json(allproduct)
-        res.status(200).json({mes:`成功加入购物车了`})
-      })
-    }else{
-      // console.log(ret.name);      
-      return  res.status(200).json({mes:`${ret.shopname}的${ret.name}之前已经在购物车了哟`})
-    }
-
+    userid:req.body.userid
+  }).then(re=>{
+    allproduct.findOne({
+      name:req.body.name
+    }).then(ret=>{
+      if(!ret){
+        console.log(ret);
+        const newallproduct =new allproduct({})
+        // const imgurl = 'http://localhost:3000/img/'
+        if(req.body.userid) newallproduct.userid = req.body.userid;        
+        if(req.body.name) newallproduct.name = req.body.name;
+        if(req.body.num) newallproduct.num = req.body.num;
+        if(req.body.remark) newfavorites.remark = null;  
+        if(req.body.imgurl) newallproduct.imgurl = null;  
+        if(req.body.shopname) newallproduct.shopname = req.body.shopname;
+        if(req.body.isstar) newallproduct.isstar = false;
+        if(req.body.price) newallproduct.price = req.body.price;
+        newallproduct.save().then(allproduct=>{
+          res.json(allproduct)
+          res.status(200).json({mes:`成功加入购物车了`})
+        })
+      }else{
+        // console.log(ret.name);      
+        return  res.status(200).json({mes:`${ret.shopname}的${ret.name}之前已经在购物车了哟`})
+      }
+  
+    })
   })
-
 })
 
 
@@ -59,7 +63,11 @@ router.post("/add",(req,res)=>{
 //@desc 获取所有的json数据
 //@access private
 router.get("/getallmes",(req,res)=>{
-  allproduct.find().then(mes=>{
+  allproduct.findO(
+  {
+    userid:req.body.userid
+  }
+  ).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{

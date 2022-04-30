@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 const allproductSchema  = new Schema({
+  userid:{
+    type:String,
+    required:true    
+  },
   name:{
     type:String,
     required:true

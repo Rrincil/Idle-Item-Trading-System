@@ -18,6 +18,8 @@ const swiper = require('./routers/api/swiper');
 const activity = require('./routers/api/activity');
 const allproduct = require('./routers/api/allproduct');
 const pa = require('./routers/api/pa');
+const menu = require('./routers/api/menus');
+const categorie = require('./routers/api/categorie')
 // const bodyParser = require('body-parser');
 // 连接 MongoDB 数据库
 mongoose.connect(uri, {
@@ -107,7 +109,10 @@ app.use('/api/activity',activity)
 app.use('/api/allproduct',allproduct)
 //使用pa
 app.use('/api/pa',pa)
-
+//使用菜单
+app.use('/api/menu',menu)
+//使用分类
+app.use('/api/categorie',categorie)
 //监听
 app.listen(3001,()=>{
   console.log('已启动');
