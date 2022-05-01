@@ -12,8 +12,25 @@ const { session } = require('passport');
 //@router get api/allproduct/text
 //@desc 返回的请求的json数据
 //@access public
-router.get('/text',(req,res)=>{
-  res.json({mes:'text'})
+router.post('/text',(req,res)=>{
+  let str=".*"+req.body.name+".*$"
+  let reg = new RegExp(str)
+  // console.log(req.body.name); 
+  // console.log(str);
+    // $options:‘i‘ 表示忽略大小写  {name:{$regex:reg,$options: 'i'}}
+    allproduct.find({
+      name:reg,
+      userid:req.body.userid
+    }).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+
 })
 
 
@@ -69,6 +86,7 @@ router.post("/getallmes",(req,res)=>{
   {
     userid:req.body.userid
   }
+  // ,null,{skip:req.body.pagesnum}
   ).then(mes=>{
     if (mes) {
       res.json(mes)
@@ -125,18 +143,24 @@ router.post("/edit/:id",(req,res)=>{
 })
 
 
-//@router post api/allproduct/delete/:id
+//@router post api/allproduct/delete
 //@desc 删除json数据
 //@access public
-router.delete("/deldete/:id",(req,res)=>{
-  allproduct.findOneAndRemove({_id:req.params.id}).then(mes=>{
+router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  allproduct.findOneAndRemove({
+    _id:req.body._id,
+    userid:req.body.userid
+  }).then(mes=>{
     if (mes) {
-      mes.save().then(allproduct=>res.json(allproduct))
+      mes.save().then(cart=>
+        res.status(200).json({mes:'已移除购物车',cart})
+      );
+      
     }else{
-      res.status(404).json({mes:'没有相关内容'})
+      res.status(200).json({mes:'没有相关内容'})
     }
   }).catch(err=>{
-    res.status(404).json(err)
+   return res.status(404).json(err)
   })
 })
 

@@ -13,7 +13,7 @@ router.post('/img1',upload.single('test'),(req,res)=>{
 console.log(req.file);
 res.send('upload img')
 })
-//图片上传必须用post方法
+//图片上传必须用post方法 api/upload/img
 router.post('/img',upload.single('test'),(req,res)=>{
     //读取文件路径
     fs.readFile(req.file.path,(err,data)=>{
