@@ -17,23 +17,26 @@ router.get('/text',(req,res)=>{
 })
 
 
-//@router post api/userlists/add
+//@router post api/userlist/add
 //npm i body-parser
 //@desc 返回的请求的json数据
 //@access public
 router.post("/add",(req,res)=>{
   userlist.findOne({
-    email:req.body.email
+    mobile:req.body.mobile
   }).then(ret=>{
     if(!ret){
       console.log(ret);
       const newuserlist =new userlist({})
       if(req.body.username) newuserlist.username = req.body.username;
-      if(req.body.role_name) newuserlist.role_name = req.body.role_name;
+      if(req.body.role_name) newuserlist.role_name = '超级VIP';
+      if(req.body.sex) newuserlist.sex = req.body.sex;
       if(req.body.create_time) newfavorites.create_time = req.body.create_time;  
       if(req.body.mobile) newuserlist.mobile = req.body.mobile;  
-      if(req.body.email) newuserlist.email = req.body.email;
-      if(req.body.mg_state) newuserlist.mg_state = false;
+      if(req.body.email){
+        newuserlist.email = req.body.email;
+      }
+      if(req.body.mg_state) newuserlist.mg_state = true;
       newuserlist.save().then(userlist=>{
         res.status(200).json({mes:`成功加入购物车了`,userlist})
       })
@@ -50,11 +53,14 @@ router.post("/add",(req,res)=>{
 
 
 
-//@router get api/profile/getallmes
+
+
+
+//@router get api/userlist/getallmes
 //@desc 获取所有的json数据
 //@access private
 router.get("/getallmes",(req,res)=>{
-  profile.find().then(mes=>{
+  userlist.find().then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
@@ -66,21 +72,43 @@ router.get("/getallmes",(req,res)=>{
 })
 
 
-//@router post api/userlists/addcart
+
+//@router post api/userlist/delete
+//@desc 删除json数据
+//@access private
+router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  userlist.findOneAndRemove({
+    _id:req.body._id
+  }).then(mes=>{
+    if (mes) {
+      mes.save().then(userlist=>
+        res.status(200).json({mes:'已移除购物车',userlist})
+      );
+      
+    }else{
+      res.status(200).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+   return res.status(404).json(err)
+  })
+})
+
+
+//@router post api/userlist/adduserlist
 //npm i body-parser
 //@desc 返回的请求的json数据
 //@access public
-router.post('/addcart',(req,res)=>{
+router.post('/adduserlist',(req,res)=>{
     
   //根据id更新数据 userlist.findByIdAndUpdate('id',{更新的内容},(err,ret)=>{})
-  userlist.findByIdAndUpdate(req.body.id,{
-    cart:req.body.cart,
+  userlist.findByIdAndUpdate(req.body._id,{
+    userlist:req.body.userlist,
   }).then(userlist=>{
     if(userlist){
-      // userlist.cart = req.body.cart
+      // userlist.userlist = req.body.userlist
       res.json({
         success:'success',
-        cart:req.body.cart
+        userlist:req.body.userlist
       })
     }
   })
@@ -113,6 +141,22 @@ router.post("/edit/:id",passport.authenticate("jwt",{session:false}),(req,res)=>
   })
 })
 
+
+
+//@router get api/userlist/findone
+//@desc 获取单个json数据
+//@access private
+router.post("/findone",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  userlist.findOne({_id:req.body._id}).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+})
 
 
 //@router post api/userlists/current

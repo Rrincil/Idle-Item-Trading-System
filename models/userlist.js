@@ -7,11 +7,14 @@ const userlistsSchema  = new Schema({
   },
   role_name:{
     type:String,
-    required:true
+    require:true
   },  
+  sex:{
+    type:String,
+    required:true
+  },    
   create_time:{
     type:Number,
-    required:true
   },
   mobile:{
     type:String,
@@ -23,7 +26,7 @@ const userlistsSchema  = new Schema({
   }, 
   mg_state:{
     type:Boolean,
-    default:false
+    default:true
   },
   data:{
     type:Date,
