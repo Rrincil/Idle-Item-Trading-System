@@ -35,17 +35,19 @@ router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
         if(req.body.name) newallproduct.name = req.body.name;
         if(req.body.num) newallproduct.num = req.body.num;
         if(req.body.remark) newfavorites.remark = null;  
-        if(req.body.imgurl) newallproduct.imgurl = null;  
+        if(req.body.goods_introduce) newallproduct.goods_introduce = req.body.goods_introduce  
         if(req.body.shopname) newallproduct.shopname = req.body.shopname;
+        if(req.body.goods_cat) newallproduct.goods_cat = req.body.goods_cat;
         if(req.body.isstar) newallproduct.isstar = false;
         if(req.body.price) newallproduct.price = req.body.price;
+        if(req.body.imgurl) newallproduct.imgurl = req.body.imgurl;
         newallproduct.save().then(allproduct=>{
-          res.json(allproduct)
-          res.status(200).json({mes:`成功加入购物车了`})
+          // res.json()
+          res.status(200).json({mes:`成功加入购物车了`,allproduct})
         })
       }else{
         // console.log(ret.name);      
-        return  res.status(200).json({mes:`${ret.shopname}的${ret.name}之前已经在购物车了哟`})
+        return  res.status(500).json({mes:`已经在购物车了哟`})
       }
   
     })
@@ -62,8 +64,8 @@ router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@router get api/allproduct/getallmes
 //@desc 获取所有的json数据
 //@access private
-router.get("/getallmes",(req,res)=>{
-  allproduct.findO(
+router.post("/getallmes",(req,res)=>{
+  allproduct.find(
   {
     userid:req.body.userid
   }

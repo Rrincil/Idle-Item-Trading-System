@@ -24,7 +24,7 @@ const allproductSchema  = new Schema({
     default:false
   },  
   imgurl:{
-    type:String,
+    type:Array,
     required:true
   },
   shopname :{
@@ -34,6 +34,12 @@ const allproductSchema  = new Schema({
   remark:{
     type:String,
   }, 
+  goods_introduce:{
+    type:String,
+  },
+  goods_cat:{
+    type:String,    
+  },
   data:{
     type:Date,
     default:Date.now
