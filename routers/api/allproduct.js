@@ -45,7 +45,7 @@ router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
       name:req.body.name
     }).then(ret=>{
       if(!ret){
-        console.log(ret);
+        // console.log(ret);
         const newallproduct =new allproduct({})
         // const imgurl = 'http://localhost:3000/img/'
         if(req.body.userid) newallproduct.userid = req.body.userid;        
@@ -165,8 +165,46 @@ router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
 })
 
 
+//@router get api/allproduct/findone
+//@desc 获取单个json数据
+//@access private
+router.post("/findone",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  allproduct.findOne({_id:req.body._id}).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+})
 
 
+
+
+//@router post api/allproduct/addallproduct
+//npm i body-parser
+//@desc 返回的请求的json数据
+//@access public
+router.post('/addallproduct',(req,res)=>{
+    
+  //根据id更新数据 allproduct.findByIdAndUpdate('id',{更新的内容},(err,ret)=>{})
+  allproduct.findByIdAndUpdate(req.body._id,{
+    $set:{
+    name:req.body.allproduct.name,num:req.body.allproduct.num,price:req.body.allproduct.price,
+    imgurl:req.body.allproduct.imgurl
+  }
+  },{ new: true }).then(allproduct=>{
+    if(allproduct){
+      // allproduct.allproduct = req.body.allproduct
+      res.json({
+        success:'success',
+        allproduct
+      })
+    }
+  })
+})
 
 // var projectInfo = require('../projectInfo.json')
 // let PictureStore = require(PROXY).pictureStore

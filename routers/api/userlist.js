@@ -99,22 +99,20 @@ router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@desc 返回的请求的json数据
 //@access public
 router.post('/adduserlist',(req,res)=>{
-    
   //根据id更新数据 userlist.findByIdAndUpdate('id',{更新的内容},(err,ret)=>{})
   userlist.findByIdAndUpdate(req.body._id,{
-    userlist:req.body.userlist,
-  }).then(userlist=>{
+    $set:{
+      username:req.body.userlist.username,email:req.body.userlist.email,mobile:req.body.userlist.mobile,
+  }
+  },{ new: true }).then(userlist=>{
     if(userlist){
       // userlist.userlist = req.body.userlist
       res.json({
         success:'success',
-        userlist:req.body.userlist
+        userlist
       })
     }
   })
-  
-
-  
 })
 
 

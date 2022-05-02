@@ -18,21 +18,22 @@ router.get('/text',(req,res)=>{
 //@router podt api/categorie/add
 //@desc 存入json数据
 //@access private
-router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
+router.post("/add",(req,res)=>{
   categorie.findOne({
     cat_id:req.body.cat_id
   }).then(ret=>{
-    if(!ret){
-      // console.log(ret);
-      const newcategorie =new categorie({})
-      if(req.body.cat_id) newcategorie.cat_id = req.body.cat_id;
-      if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
-      if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
-      if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
-      if(req.body.cat_deleted) newcategorie.cat_deleted = req.body.cat_deleted;
-      newcategorie.save().then(categorie=>{
-        res.status(200).json({mes:`成功添加分类了😎`,categorie})
-      })
+    if(ret){
+      console.log(ret);
+      // const newcategorie =new categorie({})
+      
+      // if(req.body.cat_id) newcategorie.cat_id = req.body.cat_id;
+      // if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
+      // if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
+      // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
+      // if(req.body.cat_deleted) newcategorie.cat_deleted = req.body.cat_deleted;
+      // newcategorie.save().then(categorie=>{
+        res.status(200).json({mes:`成功添加分类了😎`,ret})
+      // })
      
     }else{
       // console.log(ret.name);      
@@ -53,29 +54,38 @@ router.post("/add",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@router get api/categorie/getallmes
 //@desc 获取所有的json数据
 //@access private
-router.get("/getallmes",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  categorie.find().then(mes=>{
+router.post("/getallmes",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  categorie.find(
+  {
+    userid : req.body.userid    
+  }
+  ).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
-      res.status(404).json({mes:'没有任何内容'})
+      res.status(500).json({mes:'没有任何内容'})
     }
   }).catch(err=>{
-    res.status(404).json(err)
+    res.status(500).json(err)
   })
 })
 
 
 
-//@router get api/categorie/find
+//@router get api/categorie/finds
 //@desc 获取单个json数据
 //@access private
-router.get("find",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  categorie.findOne({type:req.params.name}).then(mes=>{
+router.post("/finds",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  categorie.find(
+    {
+    cat_id:req.body.cat_id,
+    userid:req.body.userid
+    }
+  ).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
-      res.status(404).json({mes:'没有相关内容'})
+      res.status(500).json({mes:'没有相关内容'})
     }
   }).catch(err=>{
     res.status(404).json(err)
@@ -106,18 +116,24 @@ router.post("/edit/:id",passport.authenticate("jwt",{session:false}),(req,res)=>
 })
 
 
-//@router post api/categorie/delete/:id
+//@router post api/categorie/delete
 //@desc 删除json数据
 //@access private
-router.delete("/delete/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  categorie.findOneAndRemove({name:req.params.name}).then(mes=>{
+router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  categorie.findOneAndRemove({
+    _id:req.body._id,
+    userid:req.body.userid
+  }).then(mes=>{
     if (mes) {
-      mes.save().then(categorie=>res.json(categorie))
+      mes.save().then(cart=>
+        res.status(200).json({mes:'已移除购物车',cart})
+      );
+      
     }else{
-      res.status(404).json({mes:'没有相关内容'})
+      res.status(200).json({mes:'没有相关内容'})
     }
   }).catch(err=>{
-    res.status(404).json(err)
+   return res.status(404).json(err)
   })
 })
 module.exports = router
