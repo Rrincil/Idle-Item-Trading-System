@@ -30,7 +30,6 @@ router.post('/text',(req,res)=>{
   }).catch(err=>{
     res.status(404).json(err)
   })
-
 })
 
 
@@ -132,7 +131,7 @@ router.post("/edit/:id",(req,res)=>{
   if(req.body.shopname) newallproduct.shopname = req.body.shopname;
   if(req.body.isstar) newallproduct.isstar = req.body.isstar;
   if(req.body.price) newallproduct.price = req.body.price;
-
+  // if(req.body.cat_id) newallproduct.cat_id = req.body.cat_id
   allproduct.findByIdAndUpdate(
     {_id:req.params.id},
     {$set:newallproduct},
@@ -164,12 +163,29 @@ router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
   })
 })
 
+//@router get api/allproduct/togetallmes
+//@desc 获取所有的json数据
+//@access private
+router.get("/togetallmes",(req,res)=>{
+  allproduct.find(
+  ).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(500).json({mes:'没有任何内容'})
+    }
+  }).catch(err=>{
+    res.status(500).json(err)
+  })
+})
 
 //@router get api/allproduct/findone
 //@desc 获取单个json数据
 //@access private
 router.post("/findone",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  allproduct.findOne({_id:req.body._id}).then(mes=>{
+  allproduct.findOne({
+    _id:req.body._id
+  }).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
@@ -180,6 +196,25 @@ router.post("/findone",passport.authenticate("jwt",{session:false}),(req,res)=>{
   })
 })
 
+
+//@router get api/allproduct/findcate
+//@desc 获取单个json数据
+//@access private
+router.post("/findcate",(req,res)=>{
+  let str=".*"+req.body.goods_cat+".*$"
+  let reg = new RegExp(str)
+  allproduct.find({
+    goods_cat:reg
+  }).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+})
 
 
 

@@ -5,6 +5,10 @@ const allproductSchema  = new Schema({
     type:String,
     required:true    
   },
+  // cat_id:{
+  //   type:String,
+  //   require:true
+  // },
   name:{
     type:String,
     required:true

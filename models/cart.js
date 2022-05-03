@@ -5,17 +5,21 @@ const CartSchema  = new Schema({
     type:String,
     required:true
   },
+  userid:{
+    type:String,
+    required:true
+  },
   num:{
     type:Number,
     required:true,
     default:0
   },
-  id:{
+  prodid:{
     type:String,
     required:true
-  },   
+  }, 
   imgurl:{
-    type:String,
+    type:Array,
     required:true
   },
   price :{
@@ -27,6 +31,10 @@ const CartSchema  = new Schema({
     default:false ,
     required:true 
   }, 
+  select:{
+    type:Boolean,
+    default:false ,
+  },
   shopname :{
     type:String,
     required:true    

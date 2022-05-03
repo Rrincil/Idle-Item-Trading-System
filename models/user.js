@@ -7,7 +7,6 @@ const UsersSchema  = new Schema({
   },
   shopname:{
     type:String,
-    required:true
   },  
   email:{
     type:String,

@@ -24,7 +24,6 @@ router.get('/text',(req,res)=>{
 router.post('/registe',(req,res)=>{
   // res.setHeader('Content-Type','application/x-www-form-urlencoded')
   // console.log(req.body);
-    
   //查询数据库中是否拥有邮箱
   User.findOne({ 
     email:req.body.email
@@ -34,12 +33,13 @@ router.post('/registe',(req,res)=>{
     }else{
       // const avatar = gravatar.url(req.body.email, {s: '200', r: 'pg', d: 'mm'});
       const avater = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+      const shopname = '零售商家'
       const newUser = new User({
         name:req.body.name,
         email:req.body.email,
         avatar:avater,
         password:req.body.password,
-        shopname:req.body.shopname
+        shopname:shopname
       })
                 // //存储数据
                 // newUser.save()

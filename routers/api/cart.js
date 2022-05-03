@@ -18,14 +18,16 @@ router.get('/text',(req,res)=>{
 //@router podt api/cart/add
 //@desc 存入json数据
 //@access private
-router.post("/add/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
+router.post("/add",(req,res)=>{
   cart.findOne({
-    name:req.body.name
+    userid:req.body.userid,
+    prodid:req.body.prodid
   }).then(ret=>{
     if(!ret){
       // console.log(ret);
       const newcart =new cart({})
-      if(req.body._id) newcart.id = req.body._id;
+      if(req.body.userid) newcart.userid = req.body.userid;
+      if(req.body.prodid) newcart.prodid = req.body.prodid;
       if(req.body.name) newcart.name = req.body.name;
       if(req.body.num) newcart.num = req.body.num;  
       if(req.body.imgurl) newcart.imgurl = req.body.imgurl;  
@@ -35,13 +37,11 @@ router.post("/add/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
       newcart.save().then(cart=>{
         res.status(200).json({mes:`成功加入购物车了😎`,cart})
       })
-     
     }else{
       // console.log(ret.name);      
       return  res.status(200).json({mes:`${ret.shopname}的${ret.name}已经在购物车了哟😳`})
-    }
-
-  })
+  }
+})
 
 })
 
@@ -51,8 +51,12 @@ router.post("/add/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@router get api/cart/getallmes
 //@desc 获取所有人的所有的json数据
 //@access private
-router.get("/getallmes",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  cart.find().then(mes=>{
+router.post("/getallmes",(req,res)=>{
+  cart.find(
+    {
+      userid:req.body.userid,
+    }
+  ).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
@@ -65,31 +69,20 @@ router.get("/getallmes",passport.authenticate("jwt",{session:false}),(req,res)=>
 
 
 
-//@router get api/cart/getallmes/:id
-//@desc 获取个人的所有的json数据
-//@access private
-router.get("/getallmes/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  cart.find().then(mes=>{
-    if (mes) {
-      res.json(mes)
-    }else{
-      res.status(404).json({mes:'没有任何内容'})
-    }
-  }).catch(err=>{
-    res.status(404).json(err)
-  })
-})
-
-
-
-//@router get api/cart/:id
-//@desc 获取单个json数据
-//@access private
-router.post("/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  cart.findOne({
-    // name:req.params.name   //get
-    id:req.body._id
-  }).then(mes=>{
+//@router get api/cart/text
+//@desc 搜索商品
+//@access public
+router.post('/text',(req,res)=>{
+  let str=".*"+req.body.name+".*$"
+  let reg = new RegExp(str)
+  // console.log(req.body.name); 
+  // console.log(str);
+    // $options:‘i‘ 表示忽略大小写  {name:{$regex:reg,$options: 'i'}}
+    cart.find({
+      name:reg,
+      userid:req.body.userid,
+      prodid:req.body.prodid
+    }).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
@@ -105,9 +98,9 @@ router.post("/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@router podt api/cart/edit
 //@desc 编辑json数据
 //@access private
-router.post("/edit/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
+router.post("/edit",(req,res)=>{
   const newcart ={}
-
+  if(req.body.prodid) newcart.prodid = req.body.prodid;
   if(req.body.name) newcart.name = req.body.name;
   if(req.body.num) newcart.num = req.body.num;    
   if(req.body.imgurl) newcart.imgurl = req.body.imgurl;  
@@ -115,7 +108,10 @@ router.post("/edit/:id",passport.authenticate("jwt",{session:false}),(req,res)=>
   if(req.body.isstar) newcart.isstar = req.body.isstar;
   if(req.body.price) newcart.price = req.body.price;
   cart.findByIdAndUpdate(
-    {_id:req.params.id},
+    {
+      userid:req.body.userid,
+      prodid:req.body.prodid
+    },
     {$set:newcart},
     {new:true}
   ).then(cart=>{
@@ -124,18 +120,18 @@ router.post("/edit/:id",passport.authenticate("jwt",{session:false}),(req,res)=>
 })
 
 
-//@router post api/cart/delete/:id
+//@router post api/cart/delete
 //@desc 删除json数据
 //@access private
-router.post("/delete/:id",passport.authenticate("jwt",{session:false}),(req,res)=>{
+router.post("/delete",(req,res)=>{
   cart.findOneAndRemove({
-    id:req.body.id
+    userid:req.body.userid,
+    prodid:req.body.prodid
   }).then(mes=>{
     if (mes) {
       mes.save().then(cart=>
         res.status(200).json({mes:'已移除购物车',cart})
-      );
-      
+      )
     }else{
       res.status(200).json({mes:'没有相关内容'})
     }

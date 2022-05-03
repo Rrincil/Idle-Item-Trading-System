@@ -28,9 +28,17 @@ const categorieSchema  = new Schema({
     required:true,
     default:false
   },
+  // children:{
+  //   type:Array,
+
+  // },
   data:{
     type:Date,
     default:Date.now
+  },
+  cateparams:{
+    type:String,
+    required:true,  
   }
 })
 
