@@ -34,6 +34,7 @@ router.post("/add",(req,res)=>{
       if(req.body.shopname) newcart.shopname = req.body.shopname;
       if(req.body.isstar) newcart.isstar = req.body.isstar;
       if(req.body.price) newcart.price = req.body.price;
+      newcart.select = false
       newcart.save().then(cart=>{
         res.status(200).json({mes:`成功加入购物车了😎`,cart})
       })
@@ -66,6 +67,7 @@ router.post("/getallmes",(req,res)=>{
     res.status(404).json(err)
   })
 })
+
 
 
 

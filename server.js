@@ -21,6 +21,7 @@ const pa = require('./routers/api/pa');
 const menu = require('./routers/api/menus');
 const categorie = require('./routers/api/categorie')
 const userlist = require('./routers/api/userlist')
+const report = require('./routers/api/report')
 // const bodyParser = require('body-parser');
 // 连接 MongoDB 数据库
 mongoose.connect(uri, {
@@ -116,7 +117,8 @@ app.use('/api/menu',menu)
 app.use('/api/categorie',categorie)
 // 用户列表
 app.use('/api/userlist',userlist)
-
+// 用户列表
+app.use('/api/report',report)
 //监听
 app.listen(3001,()=>{
   console.log('已启动');
