@@ -28,6 +28,7 @@ router.post("/add",(req,res)=>{
       const newcart =new cart({})
       if(req.body.userid) newcart.userid = req.body.userid;
       if(req.body.prodid) newcart.prodid = req.body.prodid;
+      if(req.body.Merchantid) newcart.Merchantid = req.body.Merchantid;
       if(req.body.name) newcart.name = req.body.name;
       if(req.body.num) newcart.num = req.body.num;  
       if(req.body.imgurl) newcart.imgurl = req.body.imgurl;  

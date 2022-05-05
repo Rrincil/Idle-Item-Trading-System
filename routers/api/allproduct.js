@@ -36,7 +36,7 @@ router.post('/text',(req,res)=>{
 //@router get api/allproduct//search
 //@desc 返回的请求的json数据
 //@access public
-router.post('//search',(req,res)=>{
+router.post('/search',(req,res)=>{
   let str=".*"+req.body.name+".*$"
   let reg = new RegExp(str)
   // console.log(req.body.name); 
