@@ -16,26 +16,27 @@ res.send('upload img')
 //图片上传必须用post方法 api/upload/img
 router.post('/img',upload.single('test'),(req,res)=>{
     //读取文件路径
-    fs.readFile(req.file.path,(err,data)=>{
+    // fs.readFile(req.file.path,(err,data)=>{
         //如果读取失败
-    if(err){return res.send('上传失败')}
+    // if(err){return res.send('上传失败')}
     //如果读取成功
     //声明图片名字为时间戳和随机数拼接成的，尽量确保唯一性
     let time=Date.now()+parseInt(Math.random()*999)+parseInt(Math.random()*2222);
     //拓展名
-    let extname=req.file.mimetype.split('/')[1]
+    let extname=req.body.file.uid
     //拼接成图片名
     let keepname=time+'.'+extname
+    let keepname2 = String(req.body.file)
     //三个参数
     //1.图片的绝对路径
     //2.写入的内容
     //3.回调函数
-    fs.writeFile(path.join(__dirname,'../../static/img/'+keepname),data,(err)=>{
+    fs.writeFile(path.join(__dirname,'../../static/img/'+keepname),keepname2,(err)=>{
         if(err){return console.log(err);}
         //data:'/img/'+keepname
         res.send({err:0,msg:'上传ok',data:keepname})
     });
- });
+//  });
 })
 
 router.post('/img3',upload.single('test'),(req,res)=>{
