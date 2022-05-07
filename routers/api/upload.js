@@ -37,11 +37,16 @@ router.post('/img',upload.single('test'),(req,res)=>{
     //2.写入的内容
     //3.回调函数
     fs.writeFile(path.join(__dirname,'../../static/img/'+keepname),data,(err)=>{
-        if(err){return console.log(err);}
-        //data:'/img/'+keepname
-        console.log(keepname)
-        res.send({url:`http://localhost:3001/img/${keepname}`})
+        if(err){
+            return console.log(err) 
+        }else{
+            //data:'/img/'+keepname
+            res.json(`http://localhost:3001/img/${keepname}`)
+            // res.json({mes:'111'})
+            // console.log(`http://localhost:3001/img/${keepname}`);
+        }
     });
+    // return res.json({mes:'111'})
  });
 })
 

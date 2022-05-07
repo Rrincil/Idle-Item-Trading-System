@@ -19,33 +19,9 @@ router.get('/text',(req,res)=>{
 //@desc 存入json数据
 //@access private
 router.post("/add",(req,res)=>{
-  order.findOne({
-    userid:req.body.userid,
-    Merchantid:req.body.Merchantid
-  }).then(ret=>{
-    if(!ret){
-      // console.log(ret);
-      const neworder =new order({})
-      if(req.body.serialNo) neworder.serialNo = req.body.serialNo;
-      if(req.body.userid) neworder.userid = req.body.userid;
-      if(req.body.prodid) neworder.prodid = req.body.prodid;
-      if(req.body.Merchantid) neworder.Merchantid = req.body.Merchantid;
-      if(req.body.name) neworder.name = req.body.name;
-      if(req.body.num) neworder.num = req.body.num;  
-      if(req.body.imgurl) neworder.imgurl = req.body.imgurl;  
-      if(req.body.shopname) neworder.shopname = req.body.shopname;
-      if(req.body.isstar) neworder.isstar = req.body.isstar;
-      if(req.body.price) neworder.price = req.body.price;
-      neworder.select = false
-      neworder.save().then(order=>{
-        res.status(200).json({mes:`成功加入购物车了😎`,order})
-      })
-    }else{
-      // console.log(ret.name);      
-      return  res.status(200).json({mes:`${ret.shopname}的${ret.name}已经在购物车了哟😳`})
-  }
-})
+  order.create(...req.body,()=>{
 
+  })
 })
 
 

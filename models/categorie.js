@@ -28,10 +28,10 @@ const categorieSchema  = new Schema({
     required:true,
     default:false
   },
-  // children:{
-  //   type:Array,
-
-  // },
+  children:{
+    type:Array,
+    required:false,
+  },
   data:{
     type:Date,
     default:Date.now

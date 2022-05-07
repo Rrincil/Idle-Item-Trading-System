@@ -24,7 +24,6 @@ router.post("/add",(req,res)=>{
     userid: req.body.userid     
   }).then(ret=>{
     if(!ret){
-      console.log(ret);
       const newcategorie =new categorie({})
       const cateparams = ''
       if(req.body.cateparams){
@@ -46,8 +45,26 @@ router.post("/add",(req,res)=>{
         res.status(200).json({mes:`成功添加分类了😎`,ret})
       })   
     }else{
-      // console.log(ret);      
-      return  res.status(200).json({mes:`已经有分类了哟😳`})
+      console.log(ret)
+      const newcategorie =new categorie({})
+      const cateparams = ''
+      if(req.body.cateparams){
+        newcategorie.cateparams = req.body.cateparams
+      }else{
+        newcategorie.cateparams = cateparams
+      }
+      if(req.body.userid) newcategorie.userid = req.body.userid 
+      if(req.body.cat_id) newcategorie.cat_id = req.body.cat_id;
+      if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
+      if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
+      // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
+      if(req.body.cat_deleted){
+        newcategorie.cat_deleted = req.body.cat_deleted;
+      }else{
+        newcategorie.cat_deleted = false
+      }      
+      if(ret.children.push(newcategorie))   
+      return  res.status(200).json({mes:`已经添加分类了`})
     }
   })
 })
