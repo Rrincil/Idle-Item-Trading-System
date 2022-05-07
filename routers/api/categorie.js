@@ -63,8 +63,9 @@ router.post("/add",(req,res)=>{
       }else{
         newcategorie.cat_deleted = false
       }      
-      if(ret.children.push(newcategorie))   
+      if(ret.children.push(newcategorie)) 
       return  res.status(200).json({mes:`已经添加分类了`})
+      console.log(ret.children);        
     }
   })
 })

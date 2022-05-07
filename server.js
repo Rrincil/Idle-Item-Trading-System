@@ -22,6 +22,7 @@ const menu = require('./routers/api/menus');
 const categorie = require('./routers/api/categorie')
 const userlist = require('./routers/api/userlist')
 const report = require('./routers/api/report')
+const order = require('./routers/api/order')
 // const bodyParser = require('body-parser');
 // 连接 MongoDB 数据库
 mongoose.connect(uri, {
@@ -115,10 +116,12 @@ app.use('/api/pa',pa)
 app.use('/api/menu',menu)
 //使用分类
 app.use('/api/categorie',categorie)
+// 用户图标识
+app.use('/api/report',report)
+// 订单
+app.use('/api/order',order)
 // 用户列表
 app.use('/api/userlist',userlist)
-// 用户列表
-app.use('/api/report',report)
 //监听
 app.listen(3001,()=>{
   console.log('已启动');

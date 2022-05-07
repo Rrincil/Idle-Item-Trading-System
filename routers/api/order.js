@@ -33,7 +33,7 @@ router.post("/add",(req,res)=>{
 router.post("/getallmes",(req,res)=>{
   order.find(
     {
-      userid:req.body.userid,
+      Merchantid:req.body.userid,
     }
   ).then(mes=>{
     if (mes) {
