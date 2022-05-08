@@ -19,13 +19,16 @@ router.get('/text',(req,res)=>{
 //@desc 存入分类数据
 //@access private
 router.post("/add",(req,res)=>{
+  if(typeof(req.body.cat_id[0])=='undefined'){
+    req.body.cat_id[0] = 1
+  }
   categorie.findOne({
     cat_id: parseInt(req.body.cat_id[0]),
     userid: req.body.userid     
   }).then(ret=>{
     
     if(!ret){
-      console.log(req.body.cat_id.length)
+      // console.log(req.body.cat_id.length)
       // 如果没有分类
       const newcategorie = new categorie({})
       const cateparams = ''
@@ -35,15 +38,17 @@ router.post("/add",(req,res)=>{
         newcategorie.cateparams = cateparams
       }
       if(req.body.userid) newcategorie.userid = req.body.userid 
-      if(req.body.cat_id) newcategorie.cat_id = req.body.cat_id2;
+      if(req.body.cat_id) newcategorie.cat_id = 2200+req.body.catid11;
       if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
-      if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
+      if(req.body.cat_pid) newcategorie.cat_pid = 0;  
       // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
       if(req.body.cat_deleted){
         newcategorie.cat_deleted = req.body.cat_deleted;
       }else{
         newcategorie.cat_deleted = false
       }
+      newcategorie.cat_level = 0
+      console.log(newcategorie.cat_id);
       newcategorie.save().then(categorie=>{
         res.status(200).json({mes:`成功添加一级分类了😎`,ret})
       })   
@@ -51,69 +56,110 @@ router.post("/add",(req,res)=>{
       // console.log(ret)
       //如果是二级分类
       if(req.body.cat_id.length==2){
-        console.log(3);
-        const catid = ret.children.childen.length
-        const newcategorie ={}
-        const cateparams = '' 
-        if(req.body.cateparams){
-          newcategorie.cateparams = req.body.cateparams
-        }else{
-          newcategorie.cateparams = cateparams
-        }
-        if(req.body.userid) newcategorie.userid = req.body.userid 
-        if(req.body.cat_id) newcategorie.cat_id = 2220+catid;
-        if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
-        if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
-        // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
-        if(req.body.cat_deleted){
-          newcategorie.cat_deleted = req.body.cat_deleted;
-        }else{
-          newcategorie.cat_deleted = false
-        }      
-        ret.children.map(item=>{
+        const a = ret.children
+        a.map(item=>{
           if(item.cat_id === req.body.cat_id[1] ){
             if(typeof(item.children)=='undefined'){
-              item.children=[]
+              const catid = 0
+              const newcategorie ={}
+              const cateparams = '' 
+              if(req.body.cateparams){
+                newcategorie.cateparams = req.body.cateparams
+              }else{
+                newcategorie.cateparams = cateparams
+              }
+              if(req.body.cat_id) newcategorie.cat_id = 2220+catid;
+              if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
+              newcategorie.cat_pid =  req.body.cat_id[0]    
+              newcategorie.cat_pid2 =  req.body.cat_id[1]
+              // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
+              if(req.body.cat_deleted){
+                newcategorie.cat_deleted = req.body.cat_deleted;
+              }else{
+                newcategorie.cat_deleted = false
+              } 
+              newcategorie.cat_level = 2
+              item.children =[]                  
               item.children.push(newcategorie)
-              console.log(item);
-              ret.save()
+              
             }else{
+              const catid = item.children.length
+              const newcategorie ={}
+              const cateparams = '' 
+              if(req.body.cateparams){
+                newcategorie.cateparams = req.body.cateparams
+              }else{
+                newcategorie.cateparams = cateparams
+              }
+              if(req.body.cat_id) newcategorie.cat_id = 2220+catid;
+              if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
+              newcategorie.cat_pid =  req.body.cat_id[0]    
+              newcategorie.cat_pid2 =  req.body.cat_id[1]
+              if(req.body.cat_deleted){
+                newcategorie.cat_deleted = req.body.cat_deleted;
+              }else{
+                newcategorie.cat_deleted = false
+              }         
+              newcategorie.cat_level = 2         
               item.children.push(newcategorie)
+              console.log(item)
             }            
           }
         })
-        console.log(ret)
-        res.status(200).json({mes:`已经添加三级分类了`})
+        ret.children = []
+        ret.save().then(cate=>{
+          cate.children = a
+          cate.save().then(cate2=>{
+
+            res.status(200).json({mes:`已经添加三级分类了`})
+          })
+        })
+        
       }else if(req.body.cat_id.length==3){
        // 如果有三级分类，添加四级分类
-          console.log(4);
-          const catid = ret.children.length
-          const newcategorie ={}
-          const cateparams = ''
-          if(req.body.cateparams){
-            newcategorie.cateparams = req.body.cateparams
-          }else{
-            newcategorie.cateparams = cateparams
-          }
-          if(req.body.userid) newcategorie.userid = req.body.userid 
-          if(req.body.cat_id) newcategorie.cat_id = 2230+catid;
-          if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
-          if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
-          // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
-          if(req.body.cat_deleted){
-            newcategorie.cat_deleted = req.body.cat_deleted;
-          }else{
-            newcategorie.cat_deleted = false
-          }   
-          ret.children.map(item=>{
-            if(item.cat_id === req.body.cat_id[1] ){
-              item.children.map(it2=>{
-                it2.children.push(newcategorie)
-              })
-            }
-          })
-          ret.save()
-          return  res.status(200).json({mes:`已经添加四级分类了`})            
+      //  const a = ret.children
+      //  a.map(item=>{
+      //    if(item.cat_id === req.body.cat_id[1] ){
+      //       const catid = 0
+      //       const newcategorie ={}
+      //       const cateparams = '' 
+      //       if(req.body.cateparams){
+      //         newcategorie.cateparams = req.body.cateparams
+      //       }else{
+      //         newcategorie.cateparams = cateparams
+      //       }
+      //       if(req.body.cat_id) newcategorie.cat_id = 2220+catid;
+      //       if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
+      //       if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
+      //       // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
+      //       if(req.body.cat_deleted){
+      //         newcategorie.cat_deleted = req.body.cat_deleted;
+      //       }else{
+      //         newcategorie.cat_deleted = false
+      //       }                   
+      //       item.children.map(item2=>{
+      //         if(item2.cat_id == req.body.cat_id[2]){
+      //           //第三类
+      //           if(typeof(item2.children)=='undefined'){
+      //             item
+      //             if(item2.cat_id === req.body.cat_id[1])
+      //             item2.children.push(newcategorie)
+      //           }else{
+
+      //           }    
+      //         }       
+      //      })    
+      //     }
+      //  })
+      //  ret.children = []
+      //  ret.save().then(cate=>{
+      //    cate.children = a
+      //    cate.save().then(cate2=>{
+
+      //      res.status(200).json({mes:`已经添加三级分类了`})
+      //    })
+      //  })   
+      res.status(200).json({mes:`最多添加三级分类`})       
       }else if(req.body.cat_id.length==1){
         // 添加二级分类
         console.log(2)
@@ -125,20 +171,27 @@ router.post("/add",(req,res)=>{
         }else{
           newcategorie.cateparams = cateparams
         }
-        if(req.body.userid) newcategorie.userid = req.body.userid 
         if(req.body.cat_id) newcategorie.cat_id = 2210+catid;
         if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
-        if(req.body.cat_pid) newcategorie.cat_pid = req.body.cat_pid;  
+        newcategorie.cat_pid =  req.body.cat_id[0]  
         // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
         if(req.body.cat_deleted){
           newcategorie.cat_deleted = req.body.cat_deleted;
         }else{
           newcategorie.cat_deleted = false
-        }      
-        // console.log(newcategorie)
-        ret.children.push(newcategorie)
-        ret.save()
-        res.status(200).json({mes:`已经添加二级分类了`})
+        }     
+        newcategorie.cat_level = 1
+        // newcategorie.children = [] 
+        if(typeof(ret.children)=='undefined'){
+          ret.children = []
+          ret.children.push(newcategorie)
+          ret.save()
+          res.status(200).json({mes:`已经添加二级分类了`})          
+        }else{
+          ret.children.push(newcategorie)
+          ret.save()
+          res.status(200).json({mes:`已经添加二级分类了`})            
+        }
         // console.log(ret.children);    
       }
     }
@@ -314,19 +367,68 @@ router.post("/edit",passport.authenticate("jwt",{session:false}),(req,res)=>{
 //@desc 删除json数据
 //@access private
 router.post("/delete",(req,res)=>{
-  categorie.findOneAndRemove({
-    _id:req.body._id,
-    userid:req.body.userid
-  }).then(mes=>{
-    if (mes) {
-      mes.save().then(categorie=>
-        res.status(200).json({mes:'已移除',categorie})
-      )
-    }else{
-      res.status(200).json({mes:'没有相关内容'})
-    }
-  }).catch(err=>{
-   return res.status(404).json(err)
-  })
+  if(req.body.cat_level ==1){
+    //第二级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        // console.log(ret.children);
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_id)
+        ret.children.splice(idx, 1)    
+        const b = ret.children
+        ret.children = []
+        ret.save().then(cate=>{
+          cate.children = b
+          cate.save().then(cate2=>{
+            res.status(200).json({mes:`已经添加三级分类了`})
+          })
+        })        
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+  }else if(req.body.cat_level ==2){
+    //第三级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_pid2)
+        const idx2 = ret.children[idx].children.findIndex(x => x.cat_id === req.body.cat_id)
+        // console.log(idx2);
+        ret.children[idx].children.splice(idx2, 1)    
+        const b = ret.children
+        // console.log(b);
+        ret.children = []
+        ret.save().then(cate=>{
+          cate.children = b
+          cate.save().then(cate2=>{
+            res.status(200).json({mes:`已经添加三级分类了`})
+          })
+        })        
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+
+  }else if(req.body.cat_level ==0){
+    categorie.findOneAndRemove({
+      cat_id:req.body.cat_id,
+      userid:req.body.userid
+    }).then(mes=>{
+      if (mes) {
+        mes.save().then(categorie=>
+          res.status(200).json({mes:'已移除',categorie})
+        )
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }).catch(err=>{
+     return res.status(404).json(err)
+    })
+  }
 })
 module.exports = router

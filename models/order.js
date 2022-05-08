@@ -3,49 +3,53 @@ const Schema = mongoose.Schema
 const orderSchema  = new Schema({
   name:{
     type:String,
-    required:true
+    required:false
   },
   serialNo:{
     type:String,
-    required:true
+    required:false
   },
   userid:{
     type:String,
-    required:true
+    required:false
   },
   Merchantid:{
     type:String,
-    required:true
+    required:false
   },
   num:{
     type:Number,
-    required:true,
+    required:false,
     default:0
   },
   prodid:{
     type:String,
-    required:true
+    required:false
   }, 
   imgurl:{
     type:Array,
-    required:true
+    required:false
   },
   price :{
     type:Number,
-    required:true    
+    required:false   
   }, 
   isstar:{
     type:Boolean,
     default:false ,
-    required:true 
+    required:false 
   }, 
+  ispay:{
+    type:Boolean,
+    required:false 
+  },   
   select:{
     type:Boolean,
     default:false ,
   },
   shopname :{
     type:String,
-    required:true    
+    required:false    
   }, 
   data:{
     type:Date,

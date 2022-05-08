@@ -18,19 +18,43 @@ router.get('/text',(req,res)=>{
 //@router podt api/order/add
 //@desc 存入json数据
 //@access private
+//@router podt api/order/add
+//@desc 存入json数据
+//@access private
 router.post("/add",(req,res)=>{
-  order.create(...req.body,()=>{
-
+  order.create(...req.body,(err,data)=>{
+    if(err)
+    res.status(200).json(err)
   })
 })
 
 
 
-
+//前端
 //@router get api/order/getallmes
 //@desc 获取所有人的所有的json数据
 //@access private
 router.post("/getallmes",(req,res)=>{
+  order.find(
+    {
+      userid:req.body.userid,
+    }
+  ).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有任何内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+})
+
+
+//@router get api/order/backgetallmes
+//@desc 获取所有人的所有的json数据
+//@access private
+router.post("/backgetallmes",(req,res)=>{
   order.find(
     {
       Merchantid:req.body.userid,
@@ -45,8 +69,6 @@ router.post("/getallmes",(req,res)=>{
     res.status(404).json(err)
   })
 })
-
-
 
 
 //@router get api/order/text
@@ -106,7 +128,7 @@ router.post("/edit",(req,res)=>{
 router.post("/delete",(req,res)=>{
   order.findOneAndRemove({
     userid:req.body.userid,
-    prodid:req.body.prodid
+    serialNo:req.body.serialNo
   }).then(mes=>{
     if (mes) {
       mes.save().then(order=>

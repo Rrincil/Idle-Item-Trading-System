@@ -6,7 +6,7 @@ const categorieSchema  = new Schema({
     required:true    
   },  
   cat_id:{
-    type:String,
+    type:Number,
     required:true
   },
   cat_name:{
@@ -18,6 +18,9 @@ const categorieSchema  = new Schema({
     required:true,
     default:0
   },  
+  cat_pid2:{
+    type:Number,
+  },    
   cat_level:{
     type:Number,
     required:true,
@@ -30,15 +33,13 @@ const categorieSchema  = new Schema({
   },
   children:{
     type:Array,
-    required:false,
   },
   data:{
     type:Date,
     default:Date.now
   },
   cateparams:{
-    type:String,
-    required:true,  
+    type:String, 
   }
 })
 
