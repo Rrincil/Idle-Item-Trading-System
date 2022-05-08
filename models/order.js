@@ -26,6 +26,10 @@ const orderSchema  = new Schema({
     type:String,
     required:false
   }, 
+  usermessage:{
+    type:Array,
+    required:false
+  },
   imgurl:{
     type:Array,
     required:false
@@ -39,6 +43,10 @@ const orderSchema  = new Schema({
     default:false ,
     required:false 
   }, 
+  isShip:{
+    type:Boolean,
+    required:false 
+  },
   ispay:{
     type:Boolean,
     required:false 

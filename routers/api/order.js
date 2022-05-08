@@ -101,23 +101,16 @@ router.post('/text',(req,res)=>{
 //@desc 编辑json数据
 //@access private
 router.post("/edit",(req,res)=>{
-  const neworder ={}
-  if(req.body.prodid) neworder.prodid = req.body.prodid;
-  if(req.body.name) neworder.name = req.body.name;
-  if(req.body.num) neworder.num = req.body.num;    
-  if(req.body.imgurl) neworder.imgurl = req.body.imgurl;  
-  if(req.body.shopname) neworder.shopname = req.body.shopname;
-  if(req.body.isstar) neworder.isstar = req.body.isstar;
-  if(req.body.price) neworder.price = req.body.price;
   order.findByIdAndUpdate(
     {
-      userid:req.body.userid,
-      prodid:req.body.prodid
+      _id: req.body._id
     },
-    {$set:neworder},
+    {$set:{
+      isShip : req.body.isShip
+    }},
     {new:true}
   ).then(order=>{
-    res.json(order)
+    res.status(200).json(order)
   })
 })
 
