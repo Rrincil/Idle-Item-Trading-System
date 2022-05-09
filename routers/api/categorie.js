@@ -172,6 +172,7 @@ router.post("/add",(req,res)=>{
           newcategorie.cateparams = cateparams
         }
         if(req.body.cat_id) newcategorie.cat_id = 2210+catid;
+        // console.log(newcategorie.cat_id)
         if(req.body.cat_name) newcategorie.cat_name = req.body.cat_name;  
         newcategorie.cat_pid =  req.body.cat_id[0]  
         // if(req.body.cat_level) newcategorie.cat_level = req.body.cat_level;
