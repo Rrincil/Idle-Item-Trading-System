@@ -342,24 +342,131 @@ router.post("/finds",passport.authenticate("jwt",{session:false}),(req,res)=>{
 
 
 
+
+
+//@router podt api/categorie/findparams
+//@desc 编辑json数据
+//@access private
+router.post("/findparams",passport.authenticate("jwt",{session:false}),(req,res)=>{
+  if(req.body.cat_level ==1){
+    //第二级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        // console.log(ret.children);
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_id)
+        const a = ret.children[idx].cateparams         
+        res.status(200).json({params:a})               
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+  }else if(req.body.cat_level ==2){
+    //第三级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_pid2)
+        const idx2 = ret.children[idx].children.findIndex(x => x.cat_id === req.body.cat_id)
+        // console.log(idx2);
+        const a = ret.children[idx].children[idx2].cateparams                  
+        res.status(200).json({params:a})      
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+
+  }else if(req.body.cat_level ==0){
+    categorie.findOne({
+      cat_id:req.body.cat_id,
+      userid:req.body.userid
+    }).then(mes=>{
+      if (mes) {
+        const a = mes.cateparams
+        res.status(200).json({params:a})       
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }).catch(err=>{
+     return res.status(404).json(err)
+    })
+  }
+})
+
+
+
 //@router podt api/categorie/edit
 //@desc 编辑json数据
 //@access private
 router.post("/edit",passport.authenticate("jwt",{session:false}),(req,res)=>{
-  const newcategorie ={}
-  if(req.body.name) newcategorie.name = req.body.name;
-  if(req.body.num) newcategorie.num = req.body.num;    
-  if(req.body.imgurl) newcategorie.imgurl = req.body.imgurl;  
-  if(req.body.shopname) newcategorie.shopname = req.body.shopname;
-  if(req.body.isstar) newcategorie.isstar = req.body.isstar;
-  if(req.body.price) newcategorie.price = req.body.price;
-  categorie.findByIdAndUpdate(
-    {_id:req.params.id},
-    {$set:newcategorie},
-    {new:true}
-  ).then(categorie=>{
-    res.json(categorie)
-  })
+  if(req.body.cat_level ==1){
+    //第二级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        // console.log(ret.children);
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_id)
+        ret.children[idx].cateparams = req.body.cateparams    
+        const b = ret.children
+        ret.children = []
+        ret.save().then(cate=>{
+          cate.children = b
+          cate.save().then(cate2=>{
+            res.status(200).json({mes:`已经修改二级分类参数了`})
+          })
+        })        
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+  }else if(req.body.cat_level ==2){
+    //第三级
+    categorie.findOne({
+      cat_id:req.body.cat_pid,
+      userid:req.body.userid
+    }).then(ret=>{
+      if (ret) {
+        const idx = ret.children.findIndex(x => x.cat_id === req.body.cat_pid2)
+        const idx2 = ret.children[idx].children.findIndex(x => x.cat_id === req.body.cat_id)
+        // console.log(idx2);
+        ret.children[idx].children[idx2].cateparams = req.body.cateparams   
+        const b = ret.children
+        // console.log(b);
+        ret.children = []
+        ret.save().then(cate=>{
+          cate.children = b
+          cate.save().then(cate2=>{
+            res.status(200).json({mes:`已修改三级分类参数成功`})
+          })
+        })        
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }) 
+
+  }else if(req.body.cat_level ==0){
+    categorie.findOneAndRemove({
+      cat_id:req.body.cat_id,
+      userid:req.body.userid
+    }).then(mes=>{
+      if (mes) {
+        mes.cateparams = req.body.cateparams
+        mes.save().then(categorie=>
+          res.status(200).json({mes:'已修改一级分类参数成功',categorie})
+        )
+      }else{
+        res.status(200).json({mes:'没有相关内容'})
+      }
+    }).catch(err=>{
+     return res.status(404).json(err)
+    })
+  }
 })
 
 
@@ -382,7 +489,7 @@ router.post("/delete",(req,res)=>{
         ret.save().then(cate=>{
           cate.children = b
           cate.save().then(cate2=>{
-            res.status(200).json({mes:`已经添加三级分类了`})
+            res.status(200).json({mes:`已经删除二级分类了`})
           })
         })        
       }else{
@@ -406,7 +513,7 @@ router.post("/delete",(req,res)=>{
         ret.save().then(cate=>{
           cate.children = b
           cate.save().then(cate2=>{
-            res.status(200).json({mes:`已经添加三级分类了`})
+            res.status(200).json({mes:`已经删除三级分类了`})
           })
         })        
       }else{
@@ -421,7 +528,7 @@ router.post("/delete",(req,res)=>{
     }).then(mes=>{
       if (mes) {
         mes.save().then(categorie=>
-          res.status(200).json({mes:'已移除',categorie})
+          res.status(200).json({mes:'已移除一级分类了',categorie})
         )
       }else{
         res.status(200).json({mes:'没有相关内容'})
