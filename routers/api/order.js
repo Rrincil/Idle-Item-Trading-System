@@ -115,6 +115,23 @@ router.post("/edit",(req,res)=>{
 })
 
 
+//@router podt api/order/editisPay
+//@desc 编辑json数据
+//@access private
+router.post("/editisPay",(req,res)=>{
+  order.findByIdAndUpdate(
+    {
+      serialNo: req.body.serialNo
+    },
+    {$set:{
+      ispay : true
+    }},
+    {new:true}
+  ).then(order=>{
+    res.status(200).json(order)
+  })
+})
+
 //@router post api/order/delete
 //@desc 删除json数据
 //@access private

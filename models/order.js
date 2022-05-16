@@ -17,6 +17,10 @@ const orderSchema  = new Schema({
     type:String,
     required:false
   },
+  signname: {
+    type:String,
+    required:true  
+  },
   num:{
     type:Number,
     required:false,
