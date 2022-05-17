@@ -101,7 +101,7 @@ router.post('/text',(req,res)=>{
 //@desc 编辑json数据
 //@access private
 router.post("/edit",(req,res)=>{
-  order.findByIdAndUpdate(
+  order.find(
     {
       _id: req.body._id
     },
@@ -115,22 +115,32 @@ router.post("/edit",(req,res)=>{
 })
 
 
+
+
 //@router podt api/order/editisPay
 //@desc 编辑json数据
 //@access private
 router.post("/editisPay",(req,res)=>{
-  order.findByIdAndUpdate(
-    {
-      serialNo: req.body.serialNo
-    },
-    {$set:{
-      ispay : true
-    }},
-    {new:true}
-  ).then(order=>{
-    res.status(200).json(order)
+  order.findByIdAndUpdate({
+    _id:req.body._id
+  },{$set:{ispay: 1}},(err)=>{
+    console.log(err)
   })
 })
+
+
+
+//@router podt api/order/editisPay2
+//@desc 编辑json数据
+//@access private
+router.post("/editisPay2",(req,res)=>{
+  order.findByIdAndUpdate({
+    _id:req.body._id
+  },{$set:{ispay: 2}},(err)=>{
+    console.log(err)
+  })
+})
+
 
 //@router post api/order/delete
 //@desc 删除json数据

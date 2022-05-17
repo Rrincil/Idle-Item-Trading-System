@@ -52,11 +52,11 @@ const orderSchema  = new Schema({
     required:false 
   },
   ispay:{
-    type:Boolean,
+    type:Number,
     required:false 
   },   
   select:{
-    type:Boolean,
+        type:Boolean,
     default:false ,
   },
   shopname :{
