@@ -33,7 +33,7 @@ router.post('/text',(req,res)=>{
 })
 
 
-//@router get api/allproduct//search
+//@router get api/allproduct/search
 //@desc 返回的请求的json数据
 //@access public
 router.post('/search',(req,res)=>{
@@ -54,6 +54,30 @@ router.post('/search',(req,res)=>{
     res.status(404).json(err)
   })
 })
+
+
+//@router get api/allproduct/searchshopname
+//@desc 返回的请求的json数据
+//@access public
+router.post('/searchshopname',(req,res)=>{
+  let str=".*"+req.body.name+".*$"
+  let reg = new RegExp(str)
+  // console.log(req.body.name); 
+  // console.log(str);
+    // $options:‘i‘ 表示忽略大小写  {name:{$regex:reg,$options: 'i'}}
+    allproduct.find({
+      shopname:reg
+    }).then(mes=>{
+    if (mes) {
+      res.json(mes)
+    }else{
+      res.status(404).json({mes:'没有相关内容'})
+    }
+  }).catch(err=>{
+    res.status(404).json(err)
+  })
+})
+
 
 
 //@router podt api/allproduct/add

@@ -20,6 +20,10 @@ const userlistsSchema  = new Schema({
     type:String,
     required:true
   },
+  Merchantid:{
+    type:String,
+    required:true
+  },
   email:{
     type:String,
     required:true

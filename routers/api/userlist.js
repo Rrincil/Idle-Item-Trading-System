@@ -23,11 +23,13 @@ router.get('/text',(req,res)=>{
 //@access public
 router.post("/add",(req,res)=>{
   userlist.findOne({
-    mobile:req.body.mobile
+    mobile:req.body.mobile,
+    Merchantid: req.body.Merchantid
   }).then(ret=>{
     if(!ret){
       console.log(ret);
       const newuserlist =new userlist({})
+      if(req.body.Merchantid) newuserlist.Merchantid = req.body.Merchantid;
       if(req.body.username) newuserlist.username = req.body.username;
       if(req.body.role_name) newuserlist.role_name = '超级VIP';
       if(req.body.sex) newuserlist.sex = req.body.sex;
@@ -38,11 +40,11 @@ router.post("/add",(req,res)=>{
       }
       if(req.body.mg_state) newuserlist.mg_state = true;
       newuserlist.save().then(userlist=>{
-        res.status(200).json({mes:`成功加入购物车了`,userlist})
+        res.status(200).json({mes:`成功加入用户了`,userlist})
       })
     }else{
       // console.log(ret.name);      
-      return  res.status(200).json({mes:`${ret.shopname}的${ret.name}之前已经在购物车了哟`})
+      return  res.status(200).json({mes:`手机号为${ret.mobile}已经在用户列表里了哟`})
     }
 
   })
@@ -59,8 +61,12 @@ router.post("/add",(req,res)=>{
 //@router get api/userlist/getallmes
 //@desc 获取所有的json数据
 //@access private
-router.get("/getallmes",(req,res)=>{
-  userlist.find().then(mes=>{
+router.post("/getallmes",(req,res)=>{
+  userlist.find(
+  {
+    Merchantid: req.body.Merchantid
+  }    
+  ).then(mes=>{
     if (mes) {
       res.json(mes)
     }else{
@@ -82,7 +88,7 @@ router.post("/delete",passport.authenticate("jwt",{session:false}),(req,res)=>{
   }).then(mes=>{
     if (mes) {
       mes.save().then(userlist=>
-        res.status(200).json({mes:'已移除购物车',userlist})
+        res.status(200).json({mes:'已移除该用户',userlist})
       );
       
     }else{
